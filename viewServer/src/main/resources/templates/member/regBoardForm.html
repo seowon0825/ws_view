@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<h1>Regist Board Form</h1>
+<hr>
+<div>
+	<form name="frm" >
+		<input type="text" name="title" placeholder="Input title....."><br>
+		<input type="text" name="content" placeholder="Input content....."><br>
+		<input type="text" name="writer" placeholder="Input writer....."><br>
+		<input type="file" name="file" ><br> <!-- file을 사용하게 되면 POST, enctype -->
+		<input type="submit" value="게시물 등록" onclick="submitForm(event)">
+	</form>
+</div>
+
+<div id="url" th:data-url="@{http://localhost:9001/member/regBoardProc}"></div>
+<script>
+function submitForm(event){
+	event.preventDefault();
+	
+	var regUrl = $("#url").attr("data-url");
+	
+	var form = document.forms['frm'];
+	var formData = $("form").serialize();
+	
+	$.ajax({
+		type: "POST",
+		url: regUrl,
+		enctype: "multipart/form-data",
+		data: formData,
+		dataType: "text",
+		processData: false,
+		contentType: false,
+		cache: false,
+		success: function(data){
+			if(data === "등록 성공"){
+				alert("게시글이 등록되었습니다.");
+				window.location.href="http://localhost:8080/member/getBoardList";
+			} else{
+				alert("게시글 등록이 실패하였습니다. 다시 작성해주세요.");
+				window.location.href="http://localhost:8080/member/regBoard";
+			}
+			console.log(data);
+			$("#demo").html(data);
+		},
+		error: function(){
+			console.log("에러 발생....");
+		}
+	});
+}
+</script>
+</body>
+</html>
